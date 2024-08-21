@@ -1,0 +1,54 @@
+#+TITLE: end-to-end testing with nix
+
+* End-to-end testing
+
+* What tests do we have?
+
+#+ATTR_REVEAL: :frag (t)
+- Packages tests
+  - check
+  - installCheck
+  - language specific tests (=pythonImportCheck=)
+
+** NixOS tests
+
+#+ATTR_REVEAL: :frag (t)
+- "build" a basic web server that returns =JSON=
+- "build" a basic web client with =curl=
+- bring up a VM with the server
+- bring up a VM with the client
+- ensure that the client can fetch from the server
+
+* The server
+
+** Data
+
+#+begin_src json
+{
+  "test": {
+    "status": "ok"
+  }
+}
+#+end_src
+
+** "Code"
+
+#+begin_src sh
+nix-shell -p nodePackages.json-server --run 'json-server --port 12345 --watch data.json'
+#+end_src
+
+* The client
+
+#+begin_src sh
+  curl http://localhost:12345/test | jq
+#+end_src
+
+* The test
+
+[[file:./test.nix]]
+
+* Reaching out
+#+INCLUDE: ../../_shared/reach_me.org
+
+* org-mode :noexport:
+#+INCLUDE: ../../_shared/common.org
